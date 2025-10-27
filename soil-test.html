@@ -56,53 +56,21 @@
                     </div>
                 </div>
             </div>
+<!-- REPLACE YOUR STATE/DISTRICT DROPDOWNS WITH THIS -->
+<label for="taluk">Taluk (ತಾಲೂಕು):</label>
+<select id="taluk" onchange="loadVillages()">
+    <option value="">Select Taluk</option>
+    <option value="Mysuru">Mysuru</option>
+    <option value="HD Kote">HD Kote</option>
+    <option value="Hunsur">Hunsur</option>
+    <option value="Nanjangud">T. Narasipura</option>
+</select>
 
-            <!-- Location Form -->
-            <div id="locationForm" class="form-container" style="display: none;">
-                <div class="form-header">
-                    <button class="back-btn" onclick="showMainMenu()">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    <h2>📍 Location-Based Advice</h2>
-                </div>
-                <form id="locationFormElement" class="form">
-                    <div class="form-group">
-                        <label for="state">State:</label>
-                        <select id="state" name="state" required>
-                            <option value="">Select State</option>
-                            <option value="karnataka">Karnataka</option>
-                            <option value="maharashtra">Maharashtra</option>
-                            <option value="tamil_nadu">Tamil Nadu</option>
-                            <option value="andhra_pradesh">Andhra Pradesh</option>
-                            <option value="telangana">Telangana</option>
-                            <option value="kerala">Kerala</option>
-                            <option value="gujarat">Gujarat</option>
-                            <option value="rajasthan">Rajasthan</option>
-                            <option value="punjab">Punjab</option>
-                            <option value="haryana">Haryana</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="district">District:</label>
-                        <input type="text" id="district" name="district" placeholder="Enter your district" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cropType">Crop Type:</label>
-                        <select id="cropType" name="cropType" required>
-                            <option value="">Select Crop Type</option>
-                            <option value="cereals">Cereals (Rice, Wheat, Maize)</option>
-                            <option value="pulses">Pulses (Dal, Beans)</option>
-                            <option value="oilseeds">Oilseeds (Groundnut, Sunflower)</option>
-                            <option value="vegetables">Vegetables</option>
-                            <option value="fruits">Fruits</option>
-                            <option value="spices">Spices</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-search"></i> Get Location Advice
-                    </button>
-                </form>
-            </div>
+<label for="village">Village (ಹಳ್ಳಿ):</label>
+<select id="village">
+    <option value="">Select Village</option>
+</select>
+
 
             <!-- Questions Form -->
             <div id="questionsForm" class="form-container" style="display: none;">
