@@ -1,0 +1,74 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="riceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#584c33;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#76441b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="200" fill="#f0f9ff"/>
+  
+  <!-- Water -->
+  <rect x="0" y="140" width="200" height="60" fill="#60a5fa" opacity="0.3"/>
+  
+  <!-- Soil -->
+  <rect x="0" y="150" width="200" height="50" fill="url(#riceGradient)"/>
+  
+  <!-- Rice plants -->
+  <g fill="#416422">
+    <!-- Plant 1 -->
+    <rect x="30" y="130" width="2" height="20"/>
+    <circle cx="31" cy="125" r="6" fill="#D9D40C"/>
+    <circle cx="28" cy="128" r="4" fill="#D9D40C"/>
+    <circle cx="34" cy="128" r="4" fill="#D9D40C"/>
+    
+    <!-- Plant 2 -->
+    <rect x="60" y="135" width="2" height="15"/>
+    <circle cx="61" cy="130" r="5" fill="#D9D40C"/>
+    <circle cx="58" cy="133" r="3" fill="#D9D40C"/>
+    <circle cx="64" cy="133" r="3" fill="#D9D40C"/>
+    
+    <!-- Plant 3 -->
+    <rect x="90" y="128" width="2" height="22"/>
+    <circle cx="91" cy="123" r="7" fill="#D9D40C"/>
+    <circle cx="88" cy="126" r="5" fill="#D9D40C"/>
+    <circle cx="94" cy="126" r="5" fill="#D9D40C"/>
+    
+    <!-- Plant 4 -->
+    <rect x="120" y="132" width="2" height="18"/>
+    <circle cx="121" cy="127" r="6" fill="#D9D40C"/>
+    <circle cx="118" cy="130" r="4" fill="#D9D40C"/>
+    <circle cx="124" cy="130" r="4" fill="#D9D40C"/>
+    
+    <!-- Plant 5 -->
+    <rect x="150" y="130" width="2" height="20"/>
+    <circle cx="151" cy="125" r="6" fill="#D9D40C"/>
+    <circle cx="148" cy="128" r="4" fill="#D9D40C"/>
+    <circle cx="154" cy="128" r="4" fill="#D9D40C"/>
+    
+    <!-- Plant 6 -->
+    <rect x="180" y="133" width="2" height="17"/>
+    <circle cx="181" cy="128" r="5" fill="#D9D40C"/>
+    <circle cx="178" cy="131" r="3" fill="#D9D40C"/>
+    <circle cx="184" cy="131" r="3" fill="#D9D40C"/>
+  </g>
+  
+  <!-- Sun -->
+  <circle cx="170" cy="30" r="15" fill="#fde047" opacity="0.8"/>
+  <g stroke="#fde047" stroke-width="2" opacity="0.6">
+    <line x1="170" y1="10" x2="170" y2="15"/>
+    <line x1="185" y1="20" x2="188" y2="23"/>
+    <line x1="190" y1="35" x2="193" y2="38"/>
+    <line x1="185" y1="50" x2="188" y2="53"/>
+    <line x1="170" y1="60" x2="170" y2="65"/>
+    <line x1="155" y1="50" x2="152" y2="53"/>
+    <line x1="150" y1="35" x2="147" y2="38"/>
+    <line x1="155" y1="20" x2="152" y2="23"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#416422">RICE</text>
+  <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Paddy</text>
+</svg>
+

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Testing - Krishi Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .header button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        .test-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .section-header h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .help-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><i class="fas fa-seedling"></i> Krishi Mitra</h1>
+        </div>
+        <button onclick="window.location.href='/pages/dashboard.html'"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-flask"></i> Soil Testing</h2>
+            <p>Provide your location and soil details to get personalized recommendations</p>
+        </div>
+
+        <div class="test-form">
+            <form id="soilTestForm">
+                <!-- Location Section -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h3>Location Information</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="state">State *</label>
+                            <select id="state" name="state" required>
+                                <option value="">Select State</option>
+                                <option value="karnataka">Karnataka</option>
+                                <option value="maharashtra">Maharashtra</option>
+                                <option value="tamil_nadu">Tamil Nadu</option>
+                                <option value="andhra_pradesh">Andhra Pradesh</option>
+                                <option value="telangana">Telangana</option>
+                                <option value="kerala">Kerala</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="district">District *</label>
+                            <input type="text" id="district" name="district" placeholder="Enter your district" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="taluk">Taluk/Block *</label>
+                            <select id="taluk" name="taluk" required>
+                                <option value="">Select Taluk</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="village">Village (optional)</label>
+                            <select id="village" name="village">
+                                <option value="">Select Village</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="number" id="latitude" name="latitude" step="0.000001" placeholder="e.g., 12.9716">
+                            <span class="help-text">Optional: Get precise location-based advice</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="number" id="longitude" name="longitude" step="0.000001" placeholder="e.g., 77.5946">
+                            <span class="help-text">Optional: Get precise location-based advice</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field Information -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fas fa-tractor"></i></div>
+                        <h3>Field Information</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="farmSize">Farm Size (acres) *</label>
+                            <input type="number" id="farmSize" name="farmSize" step="0.01" placeholder="e.g., 2.5" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="soilType">Soil Type *</label>
+                            <select id="soilType" name="soilType" required>
+                                <option value="">Select Soil Type</option>
+                                <option value="red">Red Soil</option>
+                                <option value="black">Black Soil</option>
+                                <option value="alluvial">Alluvial Soil</option>
+                                <option value="laterite">Laterite Soil</option>
+                                <option value="mountain">Mountain Soil</option>
+                                <option value="desert">Desert Soil</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="irrigation">Irrigation Type *</label>
+                            <select id="irrigation" name="irrigation" required>
+                                <option value="">Select Irrigation Type</option>
+                                <option value="rainfed">Rainfed</option>
+                                <option value="borewell">Borewell</option>
+                                <option value="canal">Canal</option>
+                                <option value="drip">Drip Irrigation</option>
+                                <option value="sprinkler">Sprinkler</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="currentCrop">Current Crop (if any)</label>
+                            <input type="text" id="currentCrop" name="currentCrop" placeholder="e.g., Rice">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soil Test Parameters -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fas fa-flask"></i></div>
+                        <h3>Soil Test Parameters</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="pH">pH Level *</label>
+                            <input type="number" id="pH" name="pH" step="0.1" min="0" max="14" placeholder="e.g., 6.5" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="nitrogen">Nitrogen (N) - kg/ha</label>
+                            <input type="number" id="nitrogen" name="nitrogen" step="0.01" placeholder="e.g., 50">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="phosphorus">Phosphorus (P) - kg/ha</label>
+                            <input type="number" id="phosphorus" name="phosphorus" step="0.01" placeholder="e.g., 40">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="potassium">Potassium (K) - kg/ha</label>
+                            <input type="number" id="potassium" name="potassium" step="0.01" placeholder="e.g., 30">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="organicCarbon">Organic Carbon (%)</label>
+                            <input type="number" id="organicCarbon" name="organicCarbon" step="0.01" placeholder="e.g., 0.8">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="moisture">Moisture Content (%)</label>
+                            <input type="number" id="moisture" name="moisture" step="0.1" placeholder="e.g., 25.0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fas fa-sticky-note"></i></div>
+                        <h3>Additional Information</h3>
+                    </div>
+                    <div class="input-group">
+                        <label for="notes">Notes (Optional)</label>
+                        <textarea id="notes" name="notes" placeholder="Any additional information about your field..."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Soil Test
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+
+            // Populate Mysuru taluks and villages
+            const talukSelect = document.getElementById('taluk');
+            const villageSelect = document.getElementById('village');
+
+            const staticTaluks = [
+                'Mysuru', 'Nanjangud', 'Hunsur', 'T Narasipura', 'Periyapatna', 'Heggadadevana Kote', 'Krishnarajanagara'
+            ];
+            let talukVillageMap = {};
+
+            try {
+                const locations = await api.getMysuruLocations();
+                // Support different shapes: array of objects or map
+                if (Array.isArray(locations)) {
+                    locations.forEach(item => {
+                        if (typeof item === 'string') {
+                            talukVillageMap[item] = [];
+                        } else if (item && item.name) {
+                            talukVillageMap[item.name] = item.villages || [];
+                        }
+                    });
+                } else if (locations && typeof locations === 'object') {
+                    talukVillageMap = locations;
+                }
+            } catch (e) {
+                // Fallback to static taluks if API fails
+                staticTaluks.forEach(t => talukVillageMap[t] = []);
+            }
+
+            const taluks = Object.keys(talukVillageMap).length ? Object.keys(talukVillageMap) : staticTaluks;
+            taluks.forEach(taluk => {
+                const opt = document.createElement('option');
+                opt.value = taluk;
+                opt.textContent = taluk;
+                talukSelect.appendChild(opt);
+            });
+
+            talukSelect.addEventListener('change', () => {
+                const selectedTaluk = talukSelect.value;
+                villageSelect.innerHTML = '<option value="">Select Village</option>';
+                const villages = talukVillageMap[selectedTaluk] || [];
+                villages.forEach(v => {
+                    const opt = document.createElement('option');
+                    opt.value = v;
+                    opt.textContent = v;
+                    villageSelect.appendChild(opt);
+                });
+            });
+        });
+
+        document.getElementById('soilTestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                location: {
+                    state: document.getElementById('state').value,
+                    district: document.getElementById('district').value,
+                    taluk: document.getElementById('taluk').value,
+                    village: document.getElementById('village').value,
+                    latitude: document.getElementById('latitude').value,
+                    longitude: document.getElementById('longitude').value
+                },
+                field: {
+                    farmSize: document.getElementById('farmSize').value,
+                    soilType: document.getElementById('soilType').value,
+                    irrigation: document.getElementById('irrigation').value,
+                    currentCrop: document.getElementById('currentCrop').value
+                },
+                soilParams: {
+                    pH: document.getElementById('pH').value,
+                    nitrogen: document.getElementById('nitrogen').value,
+                    phosphorus: document.getElementById('phosphorus').value,
+                    potassium: document.getElementById('potassium').value,
+                    organicCarbon: document.getElementById('organicCarbon').value,
+                    moisture: document.getElementById('moisture').value,
+                    unit: 'kg/ha'
+                },
+                notes: document.getElementById('notes').value,
+                method: 'lab-report'
+            };
+            
+            // Call backend analysis
+            try {
+                const response = await api.analyzeLabReport(formData);
+                sessionStorage.setItem('analysisResults', JSON.stringify(response));
+                sessionStorage.setItem('analysisMethod', 'lab-report');
+                window.location.href = '/pages/results.html';
+            } catch (error) {
+                console.error('Lab analysis failed:', error);
+                alert('Analysis failed. Please verify inputs and try again.');
+            }
+        });
+    </script>
+</body>
+</html>

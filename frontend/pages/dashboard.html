@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Krishi Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #333; }
+        .header { background: linear-gradient(135deg, #416422 0%, #819A20 100%); color: white; padding: 20px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.8rem; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .welcome { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); margin-bottom: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: all 0.3s; cursor: pointer; animation: fadeInUp 0.5s ease both; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        .card i { color: #416422; font-size: 1.8rem; }
+        .card-title { font-weight: 700; margin-top: 10px; }
+        .history { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); margin-top: 25px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid #eee; animation: fadeInUp 0.5s ease both; }
+        .history-item:last-child { border-bottom: none; }
+        .history-meta { color: #666; font-size: 0.9rem; }
+        .history-score { background: #dbeafe; color: #2563eb; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
+        .logout { background: rgba(255,255,255,0.2); border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><i class="fas fa-seedling"></i> Krishi Mitra - Dashboard</h1>
+        </div>
+        <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div class="container">
+        <div class="welcome">
+            <div id="welcomeText">Welcome!</div>
+        </div>
+
+        <div class="grid">
+            <a class="card" href="/pages/soil-test/method-selector.html">
+                <i class="fas fa-clipboard-list"></i>
+                <div class="card-title">Start Soil Test</div>
+                <div class="history-meta">Choose visual, lab report, or location</div>
+            </a>
+            <a class="card" href="/pages/soil-test/location-based.html">
+                <i class="fas fa-map-marked-alt"></i>
+                <div class="card-title">Location-Based Analysis</div>
+                <div class="history-meta">Use coordinates and taluk/village</div>
+            </a>
+            <a class="card" href="/pages/soil-test/lab-report.html">
+                <i class="fas fa-flask"></i>
+                <div class="card-title">Lab Report Analysis</div>
+                <div class="history-meta">Provide N, P, K in kg/ha</div>
+            </a>
+            <a class="card" href="/pages/soil-test/visual-assessment.html">
+                <i class="fas fa-eye"></i>
+                <div class="card-title">Visual Assessment</div>
+                <div class="history-meta">Quick multi-step guided assessment</div>
+            </a>
+        </div>
+
+        <div class="history">
+            <h2><i class="fas fa-history"></i> Recent Analyses</h2>
+            <div id="historyList">
+                <div class="history-meta">No analyses yet. Run a test to see history.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            const user = authManager.getCurrentUser();
+            const name = user?.displayName || user?.phoneNumber || user?.email || 'Farmer';
+            document.getElementById('welcomeText').textContent = `Welcome, ${name}!`;
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if (firebase && firebase.auth) {
+                    firebase.auth().signOut().then(() => {
+                        window.location.href = '/pages/login.html';
+                    });
+                }
+            });
+
+            try {
+                const userId = user?.uid || user?.userId || user?.id;
+                const history = await api.getUserHistory(userId);
+                const list = document.getElementById('historyList');
+                list.innerHTML = '';
+                if (!history || history.length === 0) {
+                    list.innerHTML = '<div class="history-meta">No analyses yet. Run a test to see history.</div>';
+                } else {
+                    history.slice(0, 6).forEach(item => {
+                        const date = new Date(item.createdAt || item.date || Date.now()).toLocaleString();
+                        const method = item.method || item.type || 'analysis';
+                        const score = (item.result?.score) || (item.summary?.score) || (item.score) || '-';
+                        const div = document.createElement('div');
+                        div.className = 'history-item';
+                        div.innerHTML = `
+                            <div>
+                                <div><strong>${method}</strong></div>
+                                <div class="history-meta">${date}</div>
+                            </div>
+                            <div class="history-score">Score: ${score}</div>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load history:', err);
+            }
+        });
+    </script>
+</body>
+</html>

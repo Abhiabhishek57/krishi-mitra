@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Mitra - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .service-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #416422;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            min-width: 200px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .user-profile:hover .user-dropdown {
+            display: block;
+        }
+        
+        .weather-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <h1>Krishi Mitra</h1>
+        </div>
+        
+        <div class="header-actions">
+            <select id="languageSelector" class="language-selector">
+                <option value="en">English</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="hi">हिंदी</option>
+            </select>
+            
+            <div class="location-display">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="currentLocation">Mysuru, Karnataka</span>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">AM</div>
+                <div class="user-dropdown">
+                    <span id="userEmail">farmer@example.com</span>
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section fade-in-up">
+            <h2 id="welcomeText">Welcome back!</h2>
+            <p id="welcomeSubtext">Here's your farm overview for today</p>
+        </div>
+
+        <!-- Service Cards Grid -->
+        <div class="cards-grid">
+            <!-- Soil Test Card -->
+            <div class="service-card soil-test-card" onclick="navigateToSoilTest()">
+                <div class="card-icon animated-glow">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3 id="soilTestTitle">Soil Analysis</h3>
+                <p id="soilTestDesc">Get crop recommendations based on your soil</p>
+                <div class="card-hover-overlay">
+                    <button class="view-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Location Info Card -->
+            <div class="service-card location-card">
+                <div class="card-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Location Info</h3>
+                <div class="location-details">
+                    <p><strong>Taluk:</strong> <span id="userTaluk">Mysuru Rural</span></p>
+                    <p><strong>District:</strong> <span id="userDistrict">Mysuru</span></p>
+                </div>
+                <button class="edit-location-btn">
+                    <i class="fas fa-edit"></i> Edit Location
+                </button>
+            </div>
+
+            <!-- About Us Card -->
+            <div class="service-card about-card" onclick="navigateToAbout()">
+                <div class="card-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h3 id="aboutTitle">About Us</h3>
+                <p id="aboutDesc">Learn more about Krishi Mitra</p>
+                <div class="card-hover-overlay">
+                    <button class="view-btn">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weather Widget Card -->
+            <div class="service-card weather-card weather-widget">
+                <div class="weather-header">
+                    <h3><i class="fas fa-cloud-sun"></i> <span id="weatherTitle">Weather</span></h3>
+                    <div class="weather-icon" id="weatherIcon">⛅</div>
+                </div>
+                <div class="weather-temp" id="temperature">28°C</div>
+                <div class="weather-condition" id="condition">Partly Cloudy</div>
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <i class="fas fa-tint"></i>
+                        <div class="weather-detail-value" id="humidity">65%</div>
+                        <div class="weather-detail-label">Humidity</div>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-wind"></i>
+                        <div class="weather-detail-value" id="wind">12 km/h</div>
+                        <div class="weather-detail-label">Wind</div>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-cloud-rain"></i>
+                        <div class="weather-detail-value" id="rain">20%</div>
+                        <div class="weather-detail-label">Rain</div>
+                    </div>
+                </div>
+                <div class="weather-forecast">
+                    <div class="forecast-day">
+                        <div class="forecast-icon">☀️</div>
+                        <div class="forecast-date">Mon</div>
+                        <div class="forecast-temp">30°/22°</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-icon">🌧️</div>
+                        <div class="forecast-date">Tue</div>
+                        <div class="forecast-temp">26°/20°</div>
+                    </div>
+                    <div class="forecast-day">
+                        <div class="forecast-icon">⛅</div>
+                        <div class="forecast-date">Wed</div>
+                        <div class="forecast-temp">28°/21°</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Section -->
+        <div class="stats-section fade-in-up">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value">2,543</div>
+                <div class="stat-label">Farmers Helped</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-seedling"></i></div>
+                <div class="stat-value">15,420</div>
+                <div class="stat-label">Crops Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value">89%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+
+        <!-- Recent Analysis (if available) -->
+        <div class="recent-section fade-in-up" id="recentSection" style="display: none;">
+            <h3>Recent Analysis</h3>
+            <div class="recent-card">
+                <div class="recent-icon"><i class="fas fa-flask"></i></div>
+                <div class="recent-info">
+                    <div class="recent-title">Soil Test Analysis</div>
+                    <div class="recent-date">2 hours ago</div>
+                    <div class="recent-score">Score: 85/100</div>
+                </div>
+                <button class="view-recent-btn">View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/weather.js"></script>
+    <script>
+        // Navigation functions
+        function navigateToSoilTest() {
+            window.location.href = 'soil-test/method-selector.html';
+        }
+
+        function navigateToAbout() {
+            window.location.href = 'about.html';
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Set user info
+            const user = authManager.getCurrentUser();
+            if (user) {
+                if (user.isGuest) {
+                    document.getElementById('userEmail').textContent = 'Guest User';
+                    document.querySelector('.user-avatar').textContent = 'G';
+                } else {
+                    document.getElementById('userEmail').textContent = user.email || user.phone || user.name;
+                    document.querySelector('.user-avatar').textContent = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
+                    
+                    if (user.photoURL) {
+                        document.querySelector('.user-avatar').innerHTML = `<img src="${user.photoURL}" alt="${user.name}">`;
+                    }
+                }
+            }
+
+            // Set welcome message
+            const currentHour = new Date().getHours();
+            let greeting = 'Welcome';
+            
+            if (currentHour < 12) {
+                greeting = 'Good morning';
+            } else if (currentHour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            
+            document.getElementById('welcomeText').textContent = `${greeting}, ${user ? user.name.split(' ')[0] : 'Farmer'}!`;
+        });
+
+        // Logout function
+        function logout() {
+            authManager.logout().then(result => {
+                if (result.success) {
+                    window.location.href = '../login.html';
+                }
+            });
+        }
+        document.getElementById('languageSelector').addEventListener('change', function() {
+            const lang = this.value;
+            localStorage.setItem('selectedLanguage', lang);
+            updateLanguage(lang);
+        });
+
+        // Load saved language
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        document.getElementById('languageSelector').value = savedLang;
+        updateLanguage(savedLang);
+
+        function updateLanguage(lang) {
+            const translations = {
+                en: {
+                    welcome: 'Welcome back!',
+                    welcomeSub: 'Here\'s your farm overview for today',
+                    soilTest: 'Soil Analysis',
+                    soilTestDesc: 'Get crop recommendations based on your soil',
+                    about: 'About Us',
+                    aboutDesc: 'Learn more about Krishi Mitra',
+                    weather: 'Weather'
+                },
+                kn: {
+                    welcome: 'ಮತ್ತೆ ಸ್ವಾಗತ!',
+                    welcomeSub: 'ಇಂದು ನಿಮ್ಮ ಕೃಷಿ ಅವಲೋಕನ ಇಲ್ಲಿದೆ',
+                    soilTest: 'ಮಣ್ಣಿನ ವಿಶ್ಲೇಷಣೆ',
+                    soilTestDesc: 'ನಿಮ್ಮ ಮಣ್ಣಿನ ಆಧಾರದ ಮೇಲೆ ಬೆಳೆ ಶಿಫಾರಸುಗಳು ಪಡೆಯಿರಿ',
+                    about: 'ನಮ್ಮ ಬಗ್ಗೆ',
+                    aboutDesc: 'ಕೃಷಿ ಮಿತ್ರದ ಬಗ್ಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ',
+                    weather: 'ಹವಾಮಾನ'
+                }
+            };
+
+            const t = translations[lang] || translations.en;
+            
+            if (document.getElementById('welcomeText')) document.getElementById('welcomeText').textContent = t.welcome;
+            if (document.getElementById('welcomeSubtext')) document.getElementById('welcomeSubtext').textContent = t.welcomeSub;
+            if (document.getElementById('soilTestTitle')) document.getElementById('soilTestTitle').textContent = t.soilTest;
+            if (document.getElementById('soilTestDesc')) document.getElementById('soilTestDesc').textContent = t.soilTestDesc;
+        }
+    </script>
+</body>
+</html>

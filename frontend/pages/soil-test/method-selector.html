@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Mitra - Soil Test Methods</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .method-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .method-card.location-based {
+            background: linear-gradient(135deg, #8cc4dc 0%, #5da6c8 100%);
+            color: white;
+        }
+        
+        .method-card.visual-assessment {
+            background: linear-gradient(135deg, #7cc404 0%, #416422 100%);
+            color: white;
+        }
+        
+        .method-card.lab-report {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+        
+        .method-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .method-body {
+            padding: 20px;
+        }
+        
+        .method-footer {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .rating {
+            color: #ffd700;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-blue {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .badge-green {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .badge-purple {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .recommended-badge {
+            background-color: #D9D40C;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #416422;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .back-btn:hover {
+            color: #5a8c30;
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <a href="../home.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="text-center mb-8 fade-in-up">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2" id="pageTitle">Choose Soil Test Method</h1>
+            <p class="text-gray-600" id="pageSubtitle">Select the most suitable method for your needs</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Location-Based Method -->
+            <div class="method-card location-based fade-in-up" style="animation-delay: 0.1s" onclick="navigateTo('location-based.html')">
+                <div class="method-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold" id="locationTitle">Location-Based</h3>
+                        <div class="rating">
+                            ⭐⭐
+                        </div>
+                    </div>
+                    <div class="flex mt-2">
+                        <span class="badge badge-blue" id="locationTime">2 min</span>
+                        <span class="badge badge-blue" id="locationDifficulty">Easy</span>
+                    </div>
+                </div>
+                <div class="method-body">
+                    <div class="method-icon mb-4 text-4xl">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <p class="mb-4" id="locationDesc">Get soil data based on your village location in Mysuru district. Quick and convenient.</p>
+                    <ul class="mb-4">
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="locationBenefit1">Area average soil data</span>
+                        </li>
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="locationBenefit2">Historical crop performance</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="locationBenefit3">Regional recommendations</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="method-footer">
+                    <button class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 py-2 rounded-lg font-semibold transition">
+                        <span id="locationButton">Select Method</span> <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Visual Assessment Method -->
+            <div class="method-card visual-assessment fade-in-up" style="animation-delay: 0.2s" onclick="navigateTo('visual-assessment.html')">
+                <div class="method-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold" id="visualTitle">Visual Assessment</h3>
+                        <div class="rating">
+                            ⭐⭐⭐
+                        </div>
+                    </div>
+                    <div class="flex mt-2">
+                        <span class="badge badge-green" id="visualTime">5 min</span>
+                        <span class="badge badge-green" id="visualDifficulty">Medium</span>
+                        <span class="recommended-badge" id="recommendedBadge">Recommended</span>
+                    </div>
+                </div>
+                <div class="method-body">
+                    <div class="method-icon mb-4 text-4xl">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <p class="mb-4" id="visualDesc">Answer simple questions about your soil's appearance and characteristics for personalized results.</p>
+                    <ul class="mb-4">
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="visualBenefit1">Color and texture analysis</span>
+                        </li>
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="visualBenefit2">Drainage assessment</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="visualBenefit3">Field condition evaluation</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="method-footer">
+                    <button class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 py-2 rounded-lg font-semibold transition">
+                        <span id="visualButton">Select Method</span> <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Lab Report Method -->
+            <div class="method-card lab-report fade-in-up" style="animation-delay: 0.3s" onclick="navigateTo('lab-report.html')">
+                <div class="method-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold" id="labTitle">Lab Report</h3>
+                        <div class="rating">
+                            ⭐⭐⭐⭐
+                        </div>
+                    </div>
+                    <div class="flex mt-2">
+                        <span class="badge badge-purple" id="labTime">3 min</span>
+                        <span class="badge badge-purple" id="labDifficulty">Advanced</span>
+                    </div>
+                </div>
+                <div class="method-body">
+                    <div class="method-icon mb-4 text-4xl">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <p class="mb-4" id="labDesc">Enter your soil test results from a laboratory for the most accurate crop recommendations.</p>
+                    <ul class="mb-4">
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="labBenefit1">Precise NPK values</span>
+                        </li>
+                        <li class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="labBenefit2">pH and micronutrient data</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="labBenefit3">Highest accuracy results</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="method-footer">
+                    <button class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 py-2 rounded-lg font-semibold transition">
+                        <span id="labButton">Select Method</span> <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            updateLanguage(savedLang);
+        });
+        
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+        
+        function updateLanguage(lang) {
+            const translations = {
+                en: {
+                    pageTitle: 'Choose Soil Test Method',
+                    pageSubtitle: 'Select the most suitable method for your needs',
+                    locationTitle: 'Location-Based',
+                    locationTime: '2 min',
+                    locationDifficulty: 'Easy',
+                    locationDesc: 'Get soil data based on your village location in Mysuru district. Quick and convenient.',
+                    locationBenefit1: 'Area average soil data',
+                    locationBenefit2: 'Historical crop performance',
+                    locationBenefit3: 'Regional recommendations',
+                    locationButton: 'Select Method',
+                    visualTitle: 'Visual Assessment',
+                    visualTime: '5 min',
+                    visualDifficulty: 'Medium',
+                    recommendedBadge: 'Recommended',
+                    visualDesc: 'Answer simple questions about your soil\'s appearance and characteristics for personalized results.',
+                    visualBenefit1: 'Color and texture analysis',
+                    visualBenefit2: 'Drainage assessment',
+                    visualBenefit3: 'Field condition evaluation',
+                    visualButton: 'Select Method',
+                    labTitle: 'Lab Report',
+                    labTime: '3 min',
+                    labDifficulty: 'Advanced',
+                    labDesc: 'Enter your soil test results from a laboratory for the most accurate crop recommendations.',
+                    labBenefit1: 'Precise NPK values',
+                    labBenefit2: 'pH and micronutrient data',
+                    labBenefit3: 'Highest accuracy results',
+                    labButton: 'Select Method'
+                },
+                ka: {
+                    pageTitle: 'ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+                    pageSubtitle: 'ನಿಮ್ಮ ಅಗತ್ಯಗಳಿಗೆ ಸೂಕ್ತವಾದ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+                    locationTitle: 'ಸ್ಥಳ-ಆಧಾರಿತ',
+                    locationTime: '2 ನಿಮಿಷ',
+                    locationDifficulty: 'ಸುಲಭ',
+                    locationDesc: 'ಮೈಸೂರು ಜಿಲ್ಲೆಯ ನಿಮ್ಮ ಗ್ರಾಮದ ಸ್ಥಳದ ಆಧಾರದ ಮೇಲೆ ಮಣ್ಣಿನ ಡೇಟಾವನ್ನು ಪಡೆಯಿರಿ. ತ್ವರಿತ ಮತ್ತು ಅನುಕೂಲಕರ.',
+                    locationBenefit1: 'ಪ್ರದೇಶದ ಸರಾಸರಿ ಮಣ್ಣಿನ ಡೇಟಾ',
+                    locationBenefit2: 'ಐತಿಹಾಸಿಕ ಬೆಳೆ ಕಾರ್ಯಕ್ಷಮತೆ',
+                    locationBenefit3: 'ಪ್ರಾದೇಶಿಕ ಶಿಫಾರಸುಗಳು',
+                    locationButton: 'ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+                    visualTitle: 'ದೃಶ್ಯ ಮೌಲ್ಯಮಾಪನ',
+                    visualTime: '5 ನಿಮಿಷ',
+                    visualDifficulty: 'ಮಧ್ಯಮ',
+                    recommendedBadge: 'ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ',
+                    visualDesc: 'ವೈಯಕ್ತಿಕ ಫಲಿತಾಂಶಗಳಿಗಾಗಿ ನಿಮ್ಮ ಮಣ್ಣಿನ ರೂಪ ಮತ್ತು ಗುಣಲಕ್ಷಣಗಳ ಬಗ್ಗೆ ಸರಳ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸಿ.',
+                    visualBenefit1: 'ಬಣ್ಣ ಮತ್ತು ಮೇಲ್ಮೈ ವಿಶ್ಲೇಷಣೆ',
+                    visualBenefit2: 'ಒಳಚರಂಡಿ ಮೌಲ್ಯಮಾಪನ',
+                    visualBenefit3: 'ಕ್ಷೇತ್ರದ ಸ್ಥಿತಿ ಮೌಲ್ಯಮಾಪನ',
+                    visualButton: 'ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+                    labTitle: 'ಪ್ರಯೋಗಾಲಯ ವರದಿ',
+                    labTime: '3 ನಿಮಿಷ',
+                    labDifficulty: 'ಸುಧಾರಿತ',
+                    labDesc: 'ಅತ್ಯಂತ ನಿಖರವಾದ ಬೆಳೆ ಶಿಫಾರಸುಗಳಿಗಾಗಿ ಪ್ರಯೋಗಾಲಯದಿಂದ ನಿಮ್ಮ ಮಣ್ಣಿನ ಪರೀಕ್ಷೆಯ ಫಲಿತಾಂಶಗಳನ್ನು ನಮೂದಿಸಿ.',
+                    labBenefit1: 'ನಿಖರವಾದ NPK ಮೌಲ್ಯಗಳು',
+                    labBenefit2: 'pH ಮತ್ತು ಸೂಕ್ಷ್ಮಪೋಷಕಾಂಶ ಡೇಟಾ',
+                    labBenefit3: 'ಅತ್ಯಧಿಕ ನಿಖರತೆಯ ಫಲಿತಾಂಶಗಳು',
+                    labButton: 'ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ'
+                },
+                hi: {
+                    pageTitle: 'मिट्टी परीक्षण विधि चुनें',
+                    pageSubtitle: 'अपनी आवश्यकताओं के लिए सबसे उपयुक्त विधि का चयन करें',
+                    locationTitle: 'स्थान-आधारित',
+                    locationTime: '2 मिनट',
+                    locationDifficulty: 'आसान',
+                    locationDesc: 'मैसूर जिले में अपने गांव के स्थान के आधार पर मिट्टी का डेटा प्राप्त करें। त्वरित और सुविधाजनक।',
+                    locationBenefit1: 'क्षेत्र औसत मिट्टी डेटा',
+                    locationBenefit2: 'ऐतिहासिक फसल प्रदर्शन',
+                    locationBenefit3: 'क्षेत्रीय सिफारिशें',
+                    locationButton: 'विधि चुनें',
+                    visualTitle: 'दृश्य मूल्यांकन',
+                    visualTime: '5 मिनट',
+                    visualDifficulty: 'मध्यम',
+                    recommendedBadge: 'अनुशंसित',
+                    visualDesc: 'व्यक्तिगत परिणामों के लिए अपनी मिट्टी के रूप और विशेषताओं के बारे में सरल प्रश्नों के उत्तर दें।',
+                    visualBenefit1: 'रंग और बनावट विश्लेषण',
+                    visualBenefit2: 'जल निकासी मूल्यांकन',
+                    visualBenefit3: 'खेत की स्थिति का मूल्यांकन',
+                    visualButton: 'विधि चुनें',
+                    labTitle: 'प्रयोगशाला रिपोर्ट',
+                    labTime: '3 मिनट',
+                    labDifficulty: 'उन्नत',
+                    labDesc: 'सबसे सटीक फसल सिफारिशों के लिए प्रयोगशाला से अपनी मिट्टी परीक्षण परिणाम दर्ज करें।',
+                    labBenefit1: 'सटीक NPK मान',
+                    labBenefit2: 'pH और सूक्ष्म पोषक तत्व डेटा',
+                    labBenefit3: 'उच्चतम सटीकता परिणाम',
+                    labButton: 'विधि चुनें'
+                }
+            };
+
+            const t = translations[lang] || translations.en;
+            
+            // Update all text elements
+            document.getElementById('pageTitle').textContent = t.pageTitle;
+            document.getElementById('pageSubtitle').textContent = t.pageSubtitle;
+            
+            document.getElementById('locationTitle').textContent = t.locationTitle;
+            document.getElementById('locationTime').textContent = t.locationTime;
+            document.getElementById('locationDifficulty').textContent = t.locationDifficulty;
+            document.getElementById('locationDesc').textContent = t.locationDesc;
+            document.getElementById('locationBenefit1').textContent = t.locationBenefit1;
+            document.getElementById('locationBenefit2').textContent = t.locationBenefit2;
+            document.getElementById('locationBenefit3').textContent = t.locationBenefit3;
+            document.getElementById('locationButton').textContent = t.locationButton;
+            
+            document.getElementById('visualTitle').textContent = t.visualTitle;
+            document.getElementById('visualTime').textContent = t.visualTime;
+            document.getElementById('visualDifficulty').textContent = t.visualDifficulty;
+            document.getElementById('recommendedBadge').textContent = t.recommendedBadge;
+            document.getElementById('visualDesc').textContent = t.visualDesc;
+            document.getElementById('visualBenefit1').textContent = t.visualBenefit1;
+            document.getElementById('visualBenefit2').textContent = t.visualBenefit2;
+            document.getElementById('visualBenefit3').textContent = t.visualBenefit3;
+            document.getElementById('visualButton').textContent = t.visualButton;
+            
+            document.getElementById('labTitle').textContent = t.labTitle;
+            document.getElementById('labTime').textContent = t.labTime;
+            document.getElementById('labDifficulty').textContent = t.labDifficulty;
+            document.getElementById('labDesc').textContent = t.labDesc;
+            document.getElementById('labBenefit1').textContent = t.labBenefit1;
+            document.getElementById('labBenefit2').textContent = t.labBenefit2;
+            document.getElementById('labBenefit3').textContent = t.labBenefit3;
+            document.getElementById('labButton').textContent = t.labButton;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi Mitra - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  
+  <!-- App Config + Firebase (required for Google/Phone auth) -->
+  <script src="../js/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  
+  <!-- Language selector and Auth handlers -->
+  <script src="../js/language.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-image: none;
+      background-color: #2d4a1f;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    body::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(65,100,34,0.85), rgba(0,0,0,0.55)); z-index: -1; }
+    .login-card { width: 100%; max-width: 480px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); overflow: hidden; }
+    .login-header { background: linear-gradient(135deg, #416422, #819A20); color: #fff; padding: 28px 22px; text-align: center; }
+    .login-header h1 { font-size: 1.8rem; font-weight: 700; }
+    .login-header .subtitle { font-size: 0.95rem; opacity: 0.9; }
+    .login-body { padding: 24px; }
+    .auth-btn { display:flex; align-items:center; gap:10px; width:100%; padding:12px; border-radius:10px; border:2px solid #e5e7eb; background:#fff; cursor:pointer; transition: all .2s; font-weight:600; }
+    .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.12); border-color:#416422; }
+    .auth-btn i { font-size: 1rem; }
+    .phone-btn { background:#8cc4dc; color:#fff; border:none; }
+    .guest-btn { background:#e1b55d; color:#fff; border:none; }
+    .divider { display:flex; align-items:center; justify-content:center; gap:10px; color:#6b7280; margin: 18px 0; }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:#e5e7eb; }
+    .input-group { margin-bottom:12px; }
+    .input-group label { display:block; margin-bottom:6px; color:#374151; font-weight:500; }
+    .input-group input { width:100%; padding:12px; border:2px solid #e5e7eb; border-radius:10px; font-size: 1rem; transition: all .2s; }
+    .input-group input:focus { outline:none; border-color:#416422; box-shadow: 0 0 0 3px rgba(65,100,34,0.15); }
+    .submit-btn { width:100%; padding:12px; border:none; border-radius:10px; background: linear-gradient(135deg, #416422, #819A20); color:#fff; font-weight:600; cursor:pointer; }
+    .toast { position:fixed; top:20px; right:20px; background:#fff; color:#333; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.2); padding:14px 18px; opacity:0; transform: translateY(-12px); transition: all .3s; z-index:1000; }
+    .toast.show { opacity:1; transform: translateY(0); }
+    .toast.success { border-left: 5px solid #7cc404; }
+    .toast.error { border-left: 5px solid #ff4d4d; }
+  </style>
+</head>
+<body>
+  <a href="../home.html" class="text-white px-3 py-2 rounded bg-black bg-opacity-30 hover:bg-opacity-50 absolute top-5 left-5">
+    <i class="fas fa-arrow-left mr-2"></i> Back to Home
+  </a>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h1><i class="fas fa-seedling mr-2"></i> Krishi Mitra</h1>
+      <p class="subtitle" data-i18n="subtitle">Your Agricultural Advisory Companion</p>
+    </div>
+
+    <div class="login-body">
+      <div class="space-y-3 auth-options">
+        <button class="auth-btn" id="googleLogin">
+          <i class="fab fa-google"></i>
+          <span data-i18n="google_login">Continue with Google</span>
+        </button>
+        <button class="auth-btn phone-btn" id="phoneLogin">
+          <i class="fas fa-phone"></i>
+          <span data-i18n="phone_login">Login with Phone OTP</span>
+        </button>
+        <button class="auth-btn guest-btn" id="guestLogin">
+          <i class="fas fa-user"></i>
+          <span data-i18n="guest_login">Continue as Guest</span>
+        </button>
+      </div>
+
+      <!-- Phone OTP Form -->
+      <div id="phoneForm" style="display:none; margin-top:16px;">
+        <div class="input-group">
+          <label for="phone" data-i18n="phone_number">Phone Number</label>
+          <input type="tel" id="phone" placeholder="+91 9876543210" />
+        </div>
+        <button class="submit-btn" id="sendOtp">
+          <span data-i18n="send_otp">Send OTP</span>
+        </button>
+
+        <div id="otpSection" style="display:none; margin-top:16px;">
+          <div class="input-group">
+            <label for="otp" data-i18n="enter_otp">Enter OTP</label>
+            <input type="text" id="otp" placeholder="6-digit OTP" />
+          </div>
+          <button class="submit-btn" id="verifyOtp">
+            <span data-i18n="verify">Verify & Login</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

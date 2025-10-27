@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Krishi Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .about-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #416422 0%, #819A20 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: #416422;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #416422 0%, #819A20 100%);
+            border-radius: 2px;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .mission-card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .mission-card:hover {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateY(-5px);
+        }
+
+        .mission-icon {
+            font-size: 3rem;
+            color: #416422;
+            margin-bottom: 20px;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .mission-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .team-section {
+            margin-top: 50px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #416422 0%, #819A20 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .team-role {
+            color: #416422;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .team-bio {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .features-section {
+            margin-top: 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #416422;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .cta-btn-primary {
+            background: linear-gradient(135deg, #416422 0%, #819A20 100%);
+            color: white;
+        }
+
+        .cta-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(65, 100, 34, 0.3);
+        }
+
+        .cta-btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid #416422;
+        }
+
+        .cta-btn-secondary:hover {
+            background: #416422;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 20px;
+            }
+
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .content-section {
+                padding: 30px 20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1><i class="fas fa-seedling"></i> Krishi Mitra</h1>
+        </div>
+        <button onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+
+    <div class="about-container">
+        <!-- Hero Section -->
+        <div class="hero-section fade-in-up">
+            <div class="hero-content">
+                <h1>About Krishi Mitra</h1>
+                <p>Empowering farmers with intelligent agricultural solutions for sustainable farming and better yields</p>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section fade-in-up">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number">2,500+</div>
+                <div class="stat-label">Farmers Helped</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-seedling"></i></div>
+                <div class="stat-number">15,000+</div>
+                <div class="stat-label">Crops Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-number">89%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Villages Covered</div>
+            </div>
+        </div>
+
+        <!-- Mission Section -->
+        <div class="content-section fade-in-up">
+            <h2 class="section-title">Our Mission</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 40px;">
+                To revolutionize agriculture in Mysuru by providing farmers with data-driven insights, 
+                personalized crop recommendations, and sustainable farming practices.
+            </p>
+            
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <div class="mission-icon"><i class="fas fa-flask"></i></div>
+                    <h3>Soil Analysis</h3>
+                    <p>Comprehensive soil testing and analysis to understand your land's potential and recommend the best crops for optimal yield.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Crop Recommendations</h3>
+                    <p>AI-powered crop suggestions based on soil conditions, weather patterns, and market demand for maximum profitability.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-icon"><i class="fas fa-vial"></i></div>
+                    <h3>Fertilizer Guidance</h3>
+                    <p>Precise fertilizer recommendations to optimize nutrient levels and reduce costs while improving soil health.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="content-section fade-in-up">
+            <h2 class="section-title">How It Works</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>1. Location Analysis</h3>
+                    <p>Start by selecting your village or locality. We use area-specific soil data and agricultural patterns to provide initial recommendations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-eye"></i></div>
+                    <h3>2. Visual Assessment</h3>
+                    <p>Answer simple questions about your soil's appearance, texture, and drainage to get more accurate recommendations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <h3>3. Lab Report Entry</h3>
+                    <p>For the most accurate results, enter your soil test report data including NPK values and pH levels.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>4. Get Recommendations</h3>
+                    <p>Receive detailed crop recommendations, fertilizer plans, and farming guidance tailored to your specific conditions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="content-section fade-in-up team-section">
+            <h2 class="section-title">Our Team</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🌾</div>
+                    <div class="team-name">Dr. Rajesh Kumar</div>
+                    <div class="team-role">Agricultural Scientist</div>
+                    <div class="team-bio">15+ years experience in soil science and crop management. Specializes in sustainable farming practices.</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👩‍💻</div>
+                    <div class="team-name">Priya Sharma</div>
+                    <div class="team-role">Data Scientist</div>
+                    <div class="team-bio">Expert in machine learning and agricultural data analysis. Develops our recommendation algorithms.</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🔬</div>
+                    <div class="team-name">Dr. Suresh Reddy</div>
+                    <div class="team-role">Soil Expert</div>
+                    <div class="team-bio">Specialist in soil chemistry and fertility management. Provides technical guidance for soil analysis.</div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">👩‍🌾</div>
+                    <div class="team-name">Lakshmi Devi</div>
+                    <div class="team-role">Field Coordinator</div>
+                    <div class="team-bio">Connects with local farmers and understands ground realities. Ensures our solutions are practical and effective.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-section fade-in-up features-section">
+            <h2 class="section-title">Why Choose Krishi Mitra?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-language"></i></div>
+                    <h3>Multi-Language Support</h3>
+                    <p>Available in English, Kannada, Hindi, and Telugu to serve farmers across different regions and languages.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile-Friendly</h3>
+                    <p>Designed for smartphones and tablets, making it easy for farmers to access recommendations on the go.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cloud-sun"></i></div>
+                    <h3>Weather Integration</h3>
+                    <p>Real-time weather data helps provide timely advice on irrigation, pest control, and harvesting.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Data Privacy</h3>
+                    <p>Your farm data is secure and private. We never share your information without your consent.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section fade-in-up">
+            <h2>Ready to Transform Your Farming?</h2>
+            <p>Join thousands of farmers who are already using Krishi Mitra to improve their yields and reduce costs.</p>
+            <div class="cta-buttons">
+                <button class="cta-btn cta-btn-primary" onclick="startAnalysis()">
+                    <i class="fas fa-flask"></i> Start Soil Analysis
+                </button>
+                <button class="cta-btn cta-btn-secondary" onclick="contactUs()">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'home.html';
+        }
+
+        function startAnalysis() {
+            window.location.href = 'soil-test/method-selector.html';
+        }
+
+        function contactUs() {
+            alert('Contact us at:\n\nEmail: support@krishimitra.com\nPhone: +91 9876543210\nAddress: Agricultural Research Station, Mysuru');
+        }
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+
+

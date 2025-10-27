@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Assessment - Krishi Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/language.js" defer></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .assessment-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4ade80, #16a34a);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .step-container {
+            display: none;
+        }
+
+        .step-container.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .color-red { background: #dc2626; }
+        .color-black { background: #374151; }
+        .color-brown { background: #92400e; }
+        .color-yellow { background: #fbbf24; }
+        .color-grey { background: #6b7280; }
+
+        .texture-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-seedling text-green-600 text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">Krishi Mitra</h1>
+            </div>
+            <button onclick="goBack()" class="flex items-center text-green-600 hover:text-green-700 transition">
+                <i class="fas fa-arrow-left mr-2"></i> Back
+            </button>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="assessment-card p-8 fade-in-up">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold text-gray-800 mb-3">
+                    <i class="fas fa-eye text-green-600 mr-2"></i> Visual Soil Assessment
+                </h1>
+                <p class="text-gray-600 text-lg">Answer simple questions about your soil to get personalized recommendations</p>
+            </div>
+
+            <div class="mb-8">
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="progress-fill h-full" id="progressFill" style="width: 20%"></div>
+                </div>
+                <div class="text-center text-gray-600 mt-2" id="progressText">Step 1 of 5</div>
+            </div>
+
+            <!-- Step 1: Soil Color -->
+            <div class="step-container active" id="step1">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">What color is your soil?</h2>
+                <p class="text-center text-gray-600 mb-8">Look at the soil in your field and select the closest match</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="red">
+                        <div class="color-swatch color-red"></div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Red/Reddish Brown</div>
+                        <div class="text-gray-600">Common in Mysuru region</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="black">
+                        <div class="color-swatch color-black"></div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Black/Dark Brown</div>
+                        <div class="text-gray-600">Rich in organic matter</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="brown">
+                        <div class="color-swatch color-brown"></div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Brown</div>
+                        <div class="text-gray-600">Balanced fertility</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="yellow">
+                        <div class="color-swatch color-yellow"></div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Yellow/Light Brown</div>
+                        <div class="text-gray-600">May need nutrients</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="grey">
+                        <div class="color-swatch color-grey"></div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Grey/Ashy</div>
+                        <div class="text-gray-600">Poor drainage possible</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-10">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="goBack()">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Methods
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="nextStep(1)">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Soil Texture -->
+            <div class="step-container" id="step2">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">How does your soil feel?</h2>
+                <p class="text-center text-gray-600 mb-8">Take a small amount of moist soil and rub it between your fingers</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="sandy">
+                        <div class="texture-image bg-blue-50">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Sandy</div>
+                        <div class="text-gray-600">Gritty, doesn't form a ball</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="loamy">
+                        <div class="texture-image bg-blue-50">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Loamy</div>
+                        <div class="text-gray-600">Smooth, forms a ball that crumbles</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="clayey">
+                        <div class="texture-image bg-blue-50">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Clayey</div>
+                        <div class="text-gray-600">Sticky, forms a firm ball</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="silty">
+                        <div class="texture-image bg-blue-50">
+                            <i class="fas fa-feather"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Silty</div>
+                        <div class="text-gray-600">Smooth like flour when dry</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="peaty">
+                        <div class="texture-image bg-blue-50">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Peaty</div>
+                        <div class="text-gray-600">Dark, spongy with plant fibers</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-10">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="prevStep(2)">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="nextStep(2)">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Water Drainage -->
+            <div class="step-container" id="step3">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">How is water drainage in your soil?</h2>
+                <p class="text-center text-gray-600 mb-8">Think about how water behaves after rain</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="poor">
+                        <div class="text-5xl mb-4 text-blue-500">
+                            <i class="fas fa-tint-slash"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Poor Drainage</div>
+                        <div class="text-gray-600">Water pools on surface for hours</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="moderate">
+                        <div class="text-5xl mb-4 text-blue-500">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Moderate Drainage</div>
+                        <div class="text-gray-600">Water drains within an hour</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="good">
+                        <div class="text-5xl mb-4 text-blue-500">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Good Drainage</div>
+                        <div class="text-gray-600">Water drains quickly</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-10">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="prevStep(3)">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="nextStep(3)">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Soil Structure -->
+            <div class="step-container" id="step4">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">What is your soil structure like?</h2>
+                <p class="text-center text-gray-600 mb-8">Check how soil breaks apart in your hands</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="granular">
+                        <div class="text-5xl mb-4 text-green-500">
+                            <i class="fas fa-dice"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Granular</div>
+                        <div class="text-gray-600">Crumbles easily into small rounded clumps</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="blocky">
+                        <div class="text-5xl mb-4 text-green-500">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Blocky</div>
+                        <div class="text-gray-600">Breaks into angular or square-like blocks</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="platy">
+                        <div class="text-5xl mb-4 text-green-500">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Platy</div>
+                        <div class="text-gray-600">Breaks into flat, plate-like pieces</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="massive">
+                        <div class="text-5xl mb-4 text-green-500">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Massive/Single Grain</div>
+                        <div class="text-gray-600">Hard to break apart or very loose individual particles</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-10">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="prevStep(4)">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="nextStep(4)">
+                        Next <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Organic Matter -->
+            <div class="step-container" id="step5">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">How much organic matter is in your soil?</h2>
+                <p class="text-center text-gray-600 mb-8">Look for dark color and plant residues</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="low">
+                        <div class="text-5xl mb-4 text-yellow-500">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Low</div>
+                        <div class="text-gray-600">Light colored soil, few plant residues</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="medium">
+                        <div class="text-5xl mb-4 text-yellow-600">
+                            <i class="fas fa-leaf"></i><i class="fas fa-leaf ml-1"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">Medium</div>
+                        <div class="text-gray-600">Moderately dark, some plant residues</div>
+                    </div>
+                    <div class="bg-white rounded-xl border-2 border-gray-200 p-6 text-center cursor-pointer hover:border-green-500 hover:shadow-lg transition transform hover:-translate-y-1" data-value="high">
+                        <div class="text-5xl mb-4 text-yellow-700">
+                            <i class="fas fa-leaf"></i><i class="fas fa-leaf ml-1"></i><i class="fas fa-leaf ml-1"></i>
+                        </div>
+                        <div class="font-semibold text-lg text-gray-800 mb-2">High</div>
+                        <div class="text-gray-600">Dark colored, many plant residues</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-10">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="prevStep(5)">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="submitAssessment()">
+                        Submit <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Section (will be shown after all steps) -->
+            <div class="step-container" id="summary">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Assessment Summary</h2>
+                
+                <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex justify-between p-3 border-b border-gray-200">
+                            <span class="font-semibold text-gray-700">Soil Color:</span>
+                            <span class="text-gray-600" id="summaryColor">-</span>
+                        </div>
+                        <div class="flex justify-between p-3 border-b border-gray-200">
+                            <span class="font-semibold text-gray-700">Soil Texture:</span>
+                            <span class="text-gray-600" id="summaryTexture">-</span>
+                        </div>
+                        <div class="flex justify-between p-3 border-b border-gray-200">
+                            <span class="font-semibold text-gray-700">Water Drainage:</span>
+                            <span class="text-gray-600" id="summaryDrainage">-</span>
+                        </div>
+                        <div class="flex justify-between p-3 border-b border-gray-200">
+                            <span class="font-semibold text-gray-700">Soil Structure:</span>
+                            <span class="text-gray-600" id="summaryStructure">-</span>
+                        </div>
+                        <div class="flex justify-between p-3 border-b border-gray-200">
+                            <span class="font-semibold text-gray-700">Organic Matter:</span>
+                            <span class="text-gray-600" id="summaryOrganic">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button type="button" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" onclick="getResults()">
+                        Get Recommendations <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/auth.js"></script>
+    <script>
+        // Gate page on auth
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+        });
+
+        // Assessment data storage
+        const assessmentData = {
+            color: '',
+            texture: '',
+            drainage: '',
+            structure: '',
+            organicMatter: ''
+        };
+
+        // Step navigation
+        const totalSteps = 5;
+        let currentStep = 1;
+
+        function updateProgress() {
+            const progressPercent = ((currentStep - 1) / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        function showStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step-container').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show the current step
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            
+            // Update progress bar
+            updateProgress();
+        }
+
+        function nextStep(currentStepNum) {
+            // Validate current step selection
+            const currentStepId = `step${currentStepNum}`;
+            const currentStepElement = document.getElementById(currentStepId);
+            
+            // Get the selected option for the current step
+            const selectedOption = currentStepElement.querySelector('.border-green-500');
+            
+            if (!selectedOption) {
+                alert('Please select an option before proceeding.');
+                return;
+            }
+            
+            // Store the selected value based on the current step
+            const selectedValue = selectedOption.getAttribute('data-value');
+            switch(currentStepNum) {
+                case 1:
+                    assessmentData.color = selectedValue;
+                    break;
+                case 2:
+                    assessmentData.texture = selectedValue;
+                    break;
+                case 3:
+                    assessmentData.drainage = selectedValue;
+                    break;
+                case 4:
+                    assessmentData.structure = selectedValue;
+                    break;
+                case 5:
+                    assessmentData.organicMatter = selectedValue;
+                    break;
+            }
+            
+            // Move to next step
+            currentStep++;
+            showStep(currentStep);
+        }
+
+        function prevStep(currentStepNum) {
+            currentStep--;
+            showStep(currentStep);
+        }
+
+        function submitAssessment() {
+            // Store the organic matter selection
+            const selectedOption = document.querySelector('#step5 .border-green-500');
+            if (!selectedOption) {
+                alert('Please select an option before submitting.');
+                return;
+            }
+            
+            assessmentData.organicMatter = selectedOption.getAttribute('data-value');
+            
+            // Update summary
+            updateSummary();
+            
+            // Show summary
+            document.querySelectorAll('.step-container').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('summary').classList.add('active');
+            
+            // Update progress to 100%
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = 'Assessment Complete';
+        }
+
+        function updateSummary() {
+            // Map data values to display text
+            const colorMap = {
+                'red': 'Red/Reddish Brown',
+                'black': 'Black/Dark Brown',
+                'brown': 'Brown',
+                'yellow': 'Yellow/Light Brown',
+                'grey': 'Grey/Ashy'
+            };
+            
+            const textureMap = {
+                'sandy': 'Sandy',
+                'loamy': 'Loamy',
+                'clayey': 'Clayey',
+                'silty': 'Silty',
+                'peaty': 'Peaty'
+            };
+            
+            const drainageMap = {
+                'poor': 'Poor Drainage',
+                'moderate': 'Moderate Drainage',
+                'good': 'Good Drainage'
+            };
+            
+            const structureMap = {
+                'granular': 'Granular',
+                'blocky': 'Blocky',
+                'platy': 'Platy',
+                'massive': 'Massive/Single Grain'
+            };
+            
+            const organicMap = {
+                'low': 'Low',
+                'medium': 'Medium',
+                'high': 'High'
+            };
+            
+            // Update summary text
+            document.getElementById('summaryColor').textContent = colorMap[assessmentData.color] || '-';
+            document.getElementById('summaryTexture').textContent = textureMap[assessmentData.texture] || '-';
+            document.getElementById('summaryDrainage').textContent = drainageMap[assessmentData.drainage] || '-';
+            document.getElementById('summaryStructure').textContent = structureMap[assessmentData.structure] || '-';
+            document.getElementById('summaryOrganic').textContent = organicMap[assessmentData.organicMatter] || '-';
+        }
+
+        function getResults() {
+            // Store assessment data in session storage for the results page
+            sessionStorage.setItem('soilAssessmentData', JSON.stringify(assessmentData));
+            
+            // Redirect to results page
+            window.location.href = '../results/results.html';
+        }
+
+        // Option selection handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listeners to all option cards
+            document.querySelectorAll('[data-value]').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from siblings
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('[data-value]').forEach(sibling => {
+                        sibling.classList.remove('selected');
+                        sibling.classList.remove('border-green-500');
+                        sibling.classList.add('border-gray-200');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    this.classList.remove('border-gray-200');
+                    this.classList.add('border-green-500');
+                });
+            });
+            
+            // Initialize the first step
+            updateProgress();
+        });
+
+        function goBack() {
+            window.location.href = 'method-selector.html';
+        }
+    </script>
+</body>
+</html>
+                </div>
+            </div>
+
+            <!-- Step 2: Soil Texture -->
+            <div class="step-container" id="step2">
+                <h2 class="step-title">How does your soil feel?</h2>
+                <p class="step-description">Take a handful of soil and describe its texture</p>
+                
+                <div class="options-grid">
+                    <div class="option-card" data-value="sandy">
+                        <div class="texture-image">🏖️</div>
+                        <div class="option-title">Sandy</div>
+                        <div class="option-description">Loose, grainy, drains quickly</div>
+                    </div>
+                    <div class="option-card" data-value="clay">
+                        <div class="texture-image">🧱</div>
+                        <div class="option-title">Clayey</div>
+                        <div class="option-description">Sticky when wet, holds water</div>
+                    </div>
+                    <div class="option-card" data-value="loamy">
+                        <div class="texture-image">🌱</div>
+                        <div class="option-title">Loamy</div>
+                        <div class="option-description">Balanced, crumbly texture</div>
+                    </div>
+                    <div class="option-card" data-value="rocky">
+                        <div class="texture-image">🪨</div>
+                        <div class="option-title">Rocky</div>
+                        <div class="option-description">Contains stones and gravel</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Water Drainage -->
+            <div class="step-container" id="step3">
+                <h2 class="step-title">How well does water drain?</h2>
+                <p class="step-description">Observe how water behaves in your field after rain</p>
+                
+                <div class="options-grid">
+                    <div class="option-card" data-value="fast">
+                        <div class="texture-image">💧💧💧</div>
+                        <div class="option-title">Very Fast</div>
+                        <div class="option-description">Water disappears quickly</div>
+                    </div>
+                    <div class="option-card" data-value="moderate">
+                        <div class="texture-image">💧💧</div>
+                        <div class="option-title">Moderate</div>
+                        <div class="option-description">Normal drainage</div>
+                    </div>
+                    <div class="option-card" data-value="slow">
+                        <div class="texture-image">💧</div>
+                        <div class="option-title">Slow/Poor</div>
+                        <div class="option-description">Water stays or stagnates</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Previous Crop Performance -->
+            <div class="step-container" id="step4">
+                <h2 class="step-title">How was your last harvest?</h2>
+                <p class="step-description">Rate the performance of your most recent crop</p>
+                
+                <div class="rating-scale">
+                    <div class="rating-option" data-value="poor">
+                        <div class="rating-emoji">😞</div>
+                        <div class="rating-text">Poor</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Very low yield</div>
+                    </div>
+                    <div class="rating-option" data-value="average">
+                        <div class="rating-emoji">😐</div>
+                        <div class="rating-text">Average</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Normal yield</div>
+                    </div>
+                    <div class="rating-option" data-value="good">
+                        <div class="rating-emoji">😊</div>
+                        <div class="rating-text">Good</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Better than average</div>
+                    </div>
+                    <div class="rating-option" data-value="excellent">
+                        <div class="rating-emoji">😄</div>
+                        <div class="rating-text">Excellent</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Very high yield</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Current Field Condition -->
+            <div class="step-container" id="step5">
+                <h2 class="step-title">Current field conditions</h2>
+                <p class="step-description">Select all that apply to your current field</p>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="weeds" value="weeds">
+                        <label for="weeds">Lots of weeds present</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cracks" value="cracks">
+                        <label for="cracks">Cracks in dry season</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="organic" value="organic">
+                        <label for="organic">Good organic matter</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="moisture" value="moisture">
+                        <label for="moisture">Holds moisture well</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="compaction" value="compaction">
+                        <label for="compaction">Soil feels compacted</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="erosion" value="erosion">
+                        <label for="erosion">Signs of erosion</label>
+                    </div>
+                </div>
+
+                <div class="summary-section" id="summarySection" style="display: none;">
+                    <h3 class="summary-title">Assessment Summary</h3>
+                    <div id="summaryContent"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-secondary" id="prevBtn" onclick="previousStep()" disabled>
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn nav-btn-primary" id="nextBtn" onclick="nextStep()" disabled>
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        const assessmentData = {};
+
+        // Initialize assessment
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Step 1-3: Option cards
+            document.querySelectorAll('#step1 .option-card, #step2 .option-card, #step3 .option-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const stepId = this.closest('.step-container').id;
+                    const value = this.dataset.value;
+                    
+                    // Remove previous selection
+                    this.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    // Add selection to clicked card
+                    this.classList.add('selected');
+                    
+                    // Store data
+                    assessmentData[stepId] = value;
+                    
+                    // Enable next button
+                    document.getElementById('nextBtn').disabled = false;
+                });
+            });
+
+            // Step 4: Rating options
+            document.querySelectorAll('#step4 .rating-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove previous selection
+                    this.parentElement.querySelectorAll('.rating-option').forEach(o => o.classList.remove('selected'));
+                    // Add selection to clicked option
+                    this.classList.add('selected');
+                    
+                    // Store data
+                    assessmentData['step4'] = this.dataset.value;
+                    
+                    // Enable next button
+                    document.getElementById('nextBtn').disabled = false;
+                });
+            });
+
+            // Step 5: Checkboxes
+            document.querySelectorAll('#step5 input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const container = this.closest('.checkbox-item');
+                    if (this.checked) {
+                        container.classList.add('selected');
+                    } else {
+                        container.classList.remove('selected');
+                    }
+                    
+                    // Enable next button if at least one is selected
+                    const checkedBoxes = document.querySelectorAll('#step5 input[type="checkbox"]:checked');
+                    document.getElementById('nextBtn').disabled = checkedBoxes.length === 0;
+                    
+                    // Update summary
+                    updateSummary();
+                });
+            });
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                
+                // Show next step
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                
+                // Update progress
+                updateProgress();
+                
+                // Update navigation buttons
+                updateNavigationButtons();
+                
+                // If it's the last step, change button text
+                if (currentStep === totalSteps) {
+                    document.getElementById('nextBtn').innerHTML = '<i class="fas fa-flask"></i> Get Analysis';
+                    document.getElementById('nextBtn').onclick = submitAssessment;
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                
+                // Show previous step
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                
+                // Update progress
+                updateProgress();
+                
+                // Update navigation buttons
+                updateNavigationButtons();
+                
+                // Reset next button if not last step
+                if (currentStep < totalSteps) {
+                    document.getElementById('nextBtn').innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+                    document.getElementById('nextBtn').onclick = nextStep;
+                }
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            
+            // Check if current step has selection
+            let hasSelection = false;
+            if (currentStep <= 3) {
+                hasSelection = document.querySelector(`#step${currentStep} .option-card.selected`) !== null;
+            } else if (currentStep === 4) {
+                hasSelection = document.querySelector(`#step${currentStep} .rating-option.selected`) !== null;
+            } else if (currentStep === 5) {
+                hasSelection = document.querySelectorAll(`#step${currentStep} input[type="checkbox"]:checked`).length > 0;
+            }
+            
+            document.getElementById('nextBtn').disabled = !hasSelection;
+        }
+
+        function updateSummary() {
+            const checkedBoxes = Array.from(document.querySelectorAll('#step5 input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            assessmentData['step5'] = checkedBoxes;
+            
+            // Show summary
+            document.getElementById('summarySection').style.display = 'block';
+            
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = `
+                <div class="summary-item">
+                    <span class="summary-label">Soil Color:</span>
+                    <span class="summary-value">${getDisplayValue('step1', assessmentData.step1)}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Soil Texture:</span>
+                    <span class="summary-value">${getDisplayValue('step2', assessmentData.step2)}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Water Drainage:</span>
+                    <span class="summary-value">${getDisplayValue('step3', assessmentData.step3)}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Last Harvest:</span>
+                    <span class="summary-value">${getDisplayValue('step4', assessmentData.step4)}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Field Conditions:</span>
+                    <span class="summary-value">${checkedBoxes.length} selected</span>
+                </div>
+            `;
+        }
+
+        function getDisplayValue(step, value) {
+            const mappings = {
+                step1: {
+                    'red': 'Red/Reddish Brown',
+                    'black': 'Black/Dark Brown',
+                    'brown': 'Brown/Yellow-Brown',
+                    'yellow': 'Light Grey/Yellow'
+                },
+                step2: {
+                    'sandy': 'Sandy',
+                    'clay': 'Clayey',
+                    'loamy': 'Loamy',
+                    'rocky': 'Rocky'
+                },
+                step3: {
+                    'fast': 'Very Fast',
+                    'moderate': 'Moderate',
+                    'slow': 'Slow/Poor'
+                },
+                step4: {
+                    'poor': 'Poor',
+                    'average': 'Average',
+                    'good': 'Good',
+                    'excellent': 'Excellent'
+                }
+            };
+            
+            return mappings[step] ? mappings[step][value] || value : value;
+        }
+
+        async function submitAssessment() {
+            // Collect all assessment data
+            const checkedBoxes = Array.from(document.querySelectorAll('#step5 input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            const assessmentData = {
+                soil_color: this.assessmentData.step1,
+                texture: this.assessmentData.step2,
+                drainage: this.assessmentData.step3,
+                previous_performance: this.assessmentData.step4,
+                current_condition: checkedBoxes
+            };
+
+            // Show loading
+            const submitBtn = document.getElementById('nextBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            submitBtn.disabled = true;
+
+            try {
+                // Call API for visual assessment analysis
+                const response = await api.analyzeVisual(assessmentData);
+                
+                // Store results and redirect to results page
+                sessionStorage.setItem('analysisResults', JSON.stringify(response));
+                sessionStorage.setItem('analysisMethod', 'assessment');
+                
+                window.location.href = '/pages/results.html';
+                
+            } catch (error) {
+                console.error('Assessment failed:', error);
+                alert('Assessment failed. Please try again.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'method-selector.html';
+        }
+    </script>
+</body>
+</html>
+
+
+

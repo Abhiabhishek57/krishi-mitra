@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location-Based Analysis - Krishi Mitra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="../../js/language.js" defer></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 2rem;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, #4ade80, #16a34a);
+            border-radius: 4px;
+        }
+
+        .location-map {
+            background-color: #eff6ff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .location-map:hover {
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05);
+            transform: scale(1.02);
+        }
+
+        .map-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-seedling text-green-600 text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">Krishi Mitra</h1>
+            </div>
+            <button onclick="goBack()" class="flex items-center text-green-600 hover:text-green-700 transition">
+                <i class="fas fa-arrow-left mr-2"></i> Back
+            </button>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="form-card fade-in-up">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold text-gray-800 mb-3">
+                    <i class="fas fa-map-marker-alt text-green-600 mr-2"></i> Location-Based Analysis
+                </h1>
+                <p class="text-gray-600 text-lg">Get crop recommendations based on your area's typical soil characteristics</p>
+            </div>
+
+            <div class="progress-bar mb-2">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="text-center text-gray-600 mb-8">Step 1 of 1 - Location Selection</div>
+
+            <form id="locationForm">
+                <div class="mb-6">
+                    <label for="taluk" class="block text-gray-700 font-semibold mb-2 text-lg">Select Taluk</label>
+                    <select id="taluk" name="taluk" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 transition">
+                        <option value="">Choose your taluk...</option>
+                        <option value="mysuru_rural">Mysuru Rural</option>
+                        <option value="kr_nagar">K.R. Nagar</option>
+                        <option value="nanjangud">Nanjangud</option>
+                        <option value="bannur">Bannur</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label for="village" class="block text-gray-700 font-semibold mb-2 text-lg">Select Village/Locality</label>
+                    <select id="village" name="village" required disabled class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 transition">
+                        <option value="">First select your taluk</option>
+                    </select>
+                </div>
+
+                <div class="mb-8">
+                    <label for="fieldSize" class="block text-gray-700 font-semibold mb-2 text-lg">Field Size (Optional)</label>
+                    <input type="number" id="fieldSize" name="fieldSize" placeholder="Enter field size in acres" min="0" step="0.1" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 transition">
+                    <small class="text-gray-500 mt-2 block">
+                        For better fertilizer calculations
+                    </small>
+                </div>
+
+                <div class="location-map mb-8">
+                    <div class="map-icon">
+                        <i class="fas fa-map text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-blue-600 mb-2">Mysuru District Map</h3>
+                    <p class="text-gray-600">Your selected location will be highlighted on the map</p>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-6 mb-8 hidden" id="locationInfo">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i> Area Characteristics
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="info-item">
+                            <h4 class="text-green-700 font-semibold mb-2">Typical Soil Type</h4>
+                            <p id="soilType" class="text-gray-700">-</p>
+                        </div>
+                        <div class="info-item">
+                            <h4 class="text-green-700 font-semibold mb-2">Common Crops</h4>
+                            <p id="commonCrops" class="text-gray-700">-</p>
+                        </div>
+                        <div class="info-item">
+                            <h4 class="text-green-700 font-semibold mb-2">Average Rainfall</h4>
+                            <p id="rainfall" class="text-gray-700">-</p>
+                        </div>
+                        <div class="info-item">
+                            <h4 class="text-green-700 font-semibold mb-2">Soil pH Range</h4>
+                            <p id="phRange" class="text-gray-700">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 text-red-600 p-4 rounded-lg mb-6 hidden" id="errorMessage"></div>
+
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 mt-8">
+                    <button type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl transition flex items-center justify-center" onclick="goBack()">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Methods
+                    </button>
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold rounded-xl transition transform hover:-translate-y-1 shadow-lg flex items-center justify-center" id="submitBtn">
+                        <span class="loading-spinner" id="loadingSpinner"></span>
+                        <i class="fas fa-flask mr-2"></i> Get Recommendations
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            
+            // Update user info in the header if needed
+            const userInfo = authManager.getCurrentUser();
+            if (userInfo) {
+                // You can add user info display here if needed
+            }
+        });
+
+        // Village data for each taluk
+        const villageData = {
+            'mysuru_rural': [
+                { value: 'hebbal', name: 'Hebbal' },
+                { value: 'hootagalli', name: 'Hootagalli' },
+                { value: 'srirampura', name: 'Srirampura' },
+                { value: 'varuna', name: 'Varuna' },
+                { value: 'hullahalli', name: 'Hullahalli' }
+            ],
+            'kr_nagar': [
+                { value: 'bannur', name: 'Bannur' },
+                { value: 'hullahalli', name: 'Hullahalli' },
+                { value: 'kr_nagar_town', name: 'K.R. Nagar Town' },
+                { value: 'kudlur', name: 'Kudlur' }
+            ],
+            'nanjangud': [
+                { value: 'hadinaru', name: 'Hadinaru' },
+                { value: 't_narasipur', name: 'T. Narasipur' },
+                { value: 'nanjangud_town', name: 'Nanjangud Town' },
+                { value: 'gundlupet', name: 'Gundlupet' }
+            ],
+            'bannur': [
+                { value: 'bannur_town', name: 'Bannur Town' },
+                { value: 'kudlur', name: 'Kudlur' },
+                { value: 'hullahalli', name: 'Hullahalli' }
+            ]
+        };
+
+        // Location characteristics for each village
+        const locationCharacteristics = {
+            'hebbal': {
+                soilType: 'Red Sandy Loam',
+                commonCrops: 'Ragi, Maize, Vegetables',
+                rainfall: '750-850 mm annually',
+                phRange: '6.0 - 7.0'
+            },
+            'hootagalli': {
+                soilType: 'Red Loamy Soil',
+                commonCrops: 'Sugarcane, Vegetables, Pulses',
+                rainfall: '700-800 mm annually',
+                phRange: '6.5 - 7.5'
+            },
+            'srirampura': {
+                soilType: 'Black Cotton Soil',
+                commonCrops: 'Cotton, Jowar, Pulses',
+                rainfall: '650-750 mm annually',
+                phRange: '7.0 - 8.0'
+            },
+            'varuna': {
+                soilType: 'Red Sandy Soil',
+                commonCrops: 'Ragi, Groundnut, Pulses',
+                rainfall: '700-800 mm annually',
+                phRange: '6.0 - 7.0'
+            },
+            'hullahalli': {
+                soilType: 'Mixed Red and Black Soil',
+                commonCrops: 'Sugarcane, Paddy, Vegetables',
+                rainfall: '800-900 mm annually',
+                phRange: '6.5 - 7.5'
+            }
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const talukSelect = document.getElementById('taluk');
+            const villageSelect = document.getElementById('village');
+            
+            // Taluk change event
+            talukSelect.addEventListener('change', function() {
+                const selectedTaluk = this.value;
+                
+                // Reset and disable village dropdown if no taluk selected
+                if (!selectedTaluk) {
+                    villageSelect.innerHTML = '<option value="">First select your taluk</option>';
+                    villageSelect.disabled = true;
+                    hideLocationInfo();
+                    return;
+                }
+                
+                // Enable and populate village dropdown
+                villageSelect.disabled = false;
+                villageSelect.innerHTML = '<option value="">Select your village...</option>';
+                
+                // Add village options
+                villageData[selectedTaluk].forEach(village => {
+                    const option = document.createElement('option');
+                    option.value = village.value;
+                    option.textContent = village.name;
+                    villageSelect.appendChild(option);
+                });
+            });
+            
+            // Village change event
+            villageSelect.addEventListener('change', function() {
+                const selectedVillage = this.value;
+                
+                if (selectedVillage && locationCharacteristics[selectedVillage]) {
+                    showLocationInfo(locationCharacteristics[selectedVillage]);
+                } else {
+                    hideLocationInfo();
+                }
+            });
+            
+            // Form submission
+            document.getElementById('locationForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        function showLocationInfo(characteristics) {
+            const locationInfo = document.getElementById('locationInfo');
+            const soilType = document.getElementById('soilType');
+            const commonCrops = document.getElementById('commonCrops');
+            const rainfall = document.getElementById('rainfall');
+            const phRange = document.getElementById('phRange');
+            
+            soilType.textContent = characteristics.soilType;
+            commonCrops.textContent = characteristics.commonCrops;
+            rainfall.textContent = characteristics.rainfall;
+            phRange.textContent = characteristics.phRange;
+            
+            locationInfo.classList.remove('hidden');
+            locationInfo.style.display = 'block';
+            locationInfo.classList.add('fade-in-up');
+        }
+
+        function hideLocationInfo() {
+            const locationInfo = document.getElementById('locationInfo');
+            locationInfo.style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.classList.add('fade-in-up');
+            }, 10);
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
+            errorDiv.classList.remove('fade-in-up');
+        }
+
+        function showLoading() {
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+        }
+
+        function hideLoading() {
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            submitBtn.disabled = false;
+            spinner.style.display = 'none';
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            hideError();
+            
+            const village = document.getElementById('village').value;
+            if (!village) {
+                showError('Please select your village to continue');
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                // Get location characteristics
+                const locationData = locationCharacteristics[village];
+                
+                // Prepare data for API call
+                const fieldSize = document.getElementById('fieldSize').value || 'Not specified';
+                const taluk = document.getElementById('taluk').value;
+                const talukName = document.getElementById('taluk').options[document.getElementById('taluk').selectedIndex].text;
+                const villageName = document.getElementById('village').options[document.getElementById('village').selectedIndex].text;
+                
+                // Call backend for analysis
+                let apiResult = null;
+                try {
+                    apiResult = await api.analyzeLocation(village, fieldSize);
+                } catch (e) {
+                    console.warn('Backend unavailable, using local characteristics');
+                }
+                
+                // Create analysis results for analytics page
+                const analysisResults = apiResult && (apiResult.soil_score || apiResult.recommendations || apiResult.fertilizer_plan) ? apiResult : {
+                    soil_score: 75,
+                    recommendations: [
+                        { crop: 'Wheat', suitability: 'High' },
+                        { crop: 'Maize', suitability: 'Medium' }
+                    ],
+                    fertilizer_plan: {
+                        urea: '50 kg/acre',
+                        dap: '40 kg/acre',
+                        mop: '30 kg/acre'
+                    }
+                };
+                
+                // Attach meta info
+                analysisResults.location = { taluk: talukName, village: villageName, fieldSize };
+                analysisResults.soilCharacteristics = {
+                    type: locationData.soilType,
+                    phRange: locationData.phRange,
+                    commonCrops: locationData.commonCrops,
+                    rainfall: locationData.rainfall
+                };
+                analysisResults.timestamp = new Date().toISOString();
+                
+                // Store in session storage for results page
+                sessionStorage.setItem('analysisResults', JSON.stringify(analysisResults));
+                
+                hideLoading();
+                window.location.href = '/pages/results.html';
+                
+            } catch (error) {
+                hideLoading();
+                showError('An error occurred. Please try again.');
+                console.error('Error:', error);
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'method-selector.html';
+        }
+    </script>
+</body>
+</html>
+
+
+

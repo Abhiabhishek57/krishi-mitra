@@ -1,0 +1,54 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="maizeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#584c33;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#76441b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="200" fill="#f0f9ff"/>
+  
+  <!-- Soil -->
+  <rect x="0" y="150" width="200" height="50" fill="url(#maizeGradient)"/>
+  
+  <!-- Maize plants -->
+  <g fill="#416422">
+    <!-- Plant 1 -->
+    <rect x="40" y="100" width="4" height="50"/>
+    <ellipse cx="42" cy="90" rx="8" ry="12" fill="#D9D40C"/>
+    <ellipse cx="38" cy="95" rx="6" ry="10" fill="#D9D40C"/>
+    <ellipse cx="46" cy="95" rx="6" ry="10" fill="#D9D40C"/>
+    
+    <!-- Plant 2 -->
+    <rect x="90" y="105" width="4" height="45"/>
+    <ellipse cx="92" cy="95" rx="7" ry="11" fill="#D9D40C"/>
+    <ellipse cx="88" cy="100" rx="5" ry="9" fill="#D9D40C"/>
+    <ellipse cx="96" cy="100" rx="5" ry="9" fill="#D9D40C"/>
+    
+    <!-- Plant 3 -->
+    <rect x="140" y="98" width="4" height="52"/>
+    <ellipse cx="142" cy="88" rx="9" ry="13" fill="#D9D40C"/>
+    <ellipse cx="138" cy="93" rx="7" ry="11" fill="#D9D40C"/>
+    <ellipse cx="146" cy="93" rx="7" ry="11" fill="#D9D40C"/>
+  </g>
+  
+  <!-- Sun -->
+  <circle cx="170" cy="30" r="15" fill="#fde047" opacity="0.8"/>
+  <g stroke="#fde047" stroke-width="2" opacity="0.6">
+    <line x1="170" y1="10" x2="170" y2="15"/>
+    <line x1="185" y1="20" x2="188" y2="23"/>
+    <line x1="190" y1="35" x2="193" y2="38"/>
+    <line x1="185" y1="50" x2="188" y2="53"/>
+    <line x1="170" y1="60" x2="170" y2="65"/>
+    <line x1="155" y1="50" x2="152" y2="53"/>
+    <line x1="150" y1="35" x2="147" y2="38"/>
+    <line x1="155" y1="20" x2="152" y2="23"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#416422">MAIZE</text>
+  <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Corn</text>
+</svg>
+
+
