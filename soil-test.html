@@ -211,6 +211,32 @@
             </div>
         </main>
     </div>
+// PASTE THIS AT THE VERY TOP OF YOUR <script> TAG IN index.html (renamed to soil-test.html)
+
+// Authentication check
+const user = JSON.parse(localStorage.getItem('currentUser'));
+if (!user) {
+    window.location.href = 'login.html';
+}
+
+// Mysuru villages data
+const villages = {
+    'Mysuru': ['Srirangapatna', 'Mandya Road', 'Alanahalli', 'Bogadi'],
+    'HD Kote': ['Antharasanthe', 'Bilikere', 'Bandipur'],
+    'Hunsur': ['Harave', 'Yedehalli', 'Bannikuppe'],
+    'Nanjangud': ['Nanjangud Town', 'T. Narasipura', 'Begur']
+};
+
+function loadVillages() {
+    const taluk = document.getElementById('taluk').value;
+    const villageSelect = document.getElementById('village');
+    villageSelect.innerHTML = '<option value="">Select Village</option>';
+    if (villages[taluk]) {
+        villages[taluk].forEach(v => {
+            villageSelect.innerHTML += `<option value="${v}">${v}</option>`;
+        });
+    }
+}
 
     <script src="static/script.js"></script>
 </body>
