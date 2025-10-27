@@ -1,37 +1,17 @@
 {
   "hosting": {
-    "public": "frontend",
+    "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**",
-      "**/venv/**",
-      "*.py",
-      "test_api.py",
-      "deploy.sh",
-      "deploy_firebase.sh",
-      "deploy_firebase.ps1",
-      "DEPLOY_COMPLETE.ps1",
-      "firebase-debug.log",
-      "serviceAccount.json",
-      "krishi-mitra-3da67-firebase-adminsdk-fbsvc-84a2f9a484.json",
-      "templates/**",
-      "main.py",
-      "requirements.txt",
-      "model.tflite",
-      "backend/**"
+      "**/node_modules/**"
     ],
-    "rewrites": [],
-    "headers": [
+    "rewrites": [
       {
-        "source": "**/*.@(js|css)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
-        ]
+        "source": "/",
+        "destination": "/login.html"
       }
     ]
   }
 }
+
